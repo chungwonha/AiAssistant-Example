@@ -1,7 +1,14 @@
 spring:
   application:
     name: aiassistant
-
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 openai:
   api:
     key: ${OPEN_AI_API_KEY}
+
+file.upload-dir: ${UPLOAD_DIR}
+
+
