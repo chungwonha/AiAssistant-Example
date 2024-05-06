@@ -17,6 +17,12 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Class: AiAssistantService
+ * Author: Chung Ha
+ * Date: 2023-03-06
+ * Description: This service class handles the embedding storage and conversational retrieval for the AI assistant.
+ */
 @Service
 @Slf4j
 public class AiAssistantService {

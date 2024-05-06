@@ -15,6 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Class: AiAssistantController
+ * Author: Chung Ha
+ * Date: 2023-03-06
+ * Description: This controller class handles the API endpoints for the AI assistant.
+ */
+
 @RestController
 @RequestMapping("/aiassistant/api")
 @Slf4j

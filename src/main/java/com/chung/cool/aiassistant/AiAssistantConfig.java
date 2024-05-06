@@ -12,6 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Class: AiAssistantConfig
+ * Author: Chung Ha
+ * Date: 2023-03-06
+ * Description: This configuration class sets up the beans for the AI assistant.
+ */
+
 @Configuration
 @Slf4j
 public class AiAssistantConfig {
