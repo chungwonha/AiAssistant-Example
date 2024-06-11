@@ -5,10 +5,24 @@ spring:
     multipart:
       max-file-size: 200MB
       max-request-size: 200MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 openai:
   api:
     key: ${OPEN_AI_API_KEY}
 
 file.upload-dir: ${UPLOAD_DIR}
+
 
 

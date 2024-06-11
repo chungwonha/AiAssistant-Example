@@ -11,6 +11,7 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,11 @@ import java.util.List;
 public class AiAssistantService {
     private final EmbeddingStore<TextSegment> elasticsearchEmbeddingStore;
     private final EmbeddingModel embeddingModel;
-
     private final ConversationalRetrievalChain conversationalRetrievalChain;
+
+    @Autowired
+    private ChatMemoryRepository chatMemoryRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
     public AiAssistantService(EmbeddingModel embeddingModel,
@@ -59,4 +63,9 @@ public class AiAssistantService {
     public String chat(String prompt) {
         return conversationalRetrievalChain.execute(prompt);
     }
+
+    public String getChatMemory(Long userId) {
+        return chatMemoryRepository.findById(userId).orElse(new ChatMemory()).getMessage();
+    }
+
 }

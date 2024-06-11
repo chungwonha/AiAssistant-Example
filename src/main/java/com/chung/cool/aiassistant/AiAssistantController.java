@@ -1,6 +1,9 @@
 package com.chung.cool.aiassistant;
 
+import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.memory.chat.TokenWindowChatMemory;
+import dev.langchain4j.model.mistralai.MistralAiChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 import jakarta.annotation.PostConstruct;
@@ -15,6 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.Map;
+import java.util.Optional;
+
 /**
  * Class: AiAssistantController
  * Author: Chung Ha
@@ -27,7 +33,13 @@ import java.nio.file.Paths;
 @Slf4j
 public class AiAssistantController {
     CurrentTimeAiAssistant currentTimeAiAssistant;
+    @Autowired
+    MyPersistentChatMemoryStore myPersistentChatMemoryStore;
+    @Autowired
+    ChatMemoryRepository chatMemoryRepository;
+    private MyAiAssistant myAiAssistant;
     private final CurrentTimeProvider currentTimeProvider;
+    private final ChatMemoryTools chatMemoryTools;
     @Autowired
     private AiAssistantService aiAssistantService;
     @Value("${openai.api.key}")
@@ -35,22 +47,41 @@ public class AiAssistantController {
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public AiAssistantController(CurrentTimeProvider currentTimeProvider) {
+    public AiAssistantController(CurrentTimeProvider currentTimeProvider, ChatMemoryTools chatMemoryTools) {
         this.currentTimeProvider = currentTimeProvider;
+        this.chatMemoryTools = chatMemoryTools;
     }
     @PostConstruct
     public void init() {
+
         currentTimeAiAssistant = AiServices.builder(CurrentTimeAiAssistant.class)
                 .chatLanguageModel(OpenAiChatModel.withApiKey(openaiApiKey))
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(20))
                 .tools(currentTimeProvider)
                 .build();
+
+        ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
+                .id(memoryId)
+                .maxMessages(10)
+                .chatMemoryStore(myPersistentChatMemoryStore)
+                .build();
+
+        myAiAssistant = AiServices.builder(MyAiAssistant.class)
+                .chatLanguageModel(OpenAiChatModel.withApiKey(openaiApiKey))
+                .chatMemoryProvider(chatMemoryProvider)
+                .tools(currentTimeProvider,chatMemoryTools)
+                .build();
     }
     @PostMapping("/chat")
-    public String chat(@RequestBody String prompt) {
-        return currentTimeAiAssistant.chat(prompt);
+    public String chat(@RequestBody Map<String,String> prompt) {
+        return myAiAssistant.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));
     }
 
+    @GetMapping("/getmemory/{userid}")
+    public String getMemory(@PathVariable String userid){
+        Optional<ChatMemory> chatMemory = chatMemoryRepository.findById(Long.parseLong(userid));
+        return chatMemory.isEmpty() ?"none":chatMemory.get().getMessage();
+    }
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file) {
         log.info("upload called---------------");
