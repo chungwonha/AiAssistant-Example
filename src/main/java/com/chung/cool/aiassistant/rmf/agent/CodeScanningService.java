@@ -3,6 +3,7 @@ package com.chung.cool.aiassistant.rmf.agent;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -24,17 +25,16 @@ import java.nio.file.*;
 @Slf4j
 public class CodeScanningService {
 
-    @Value("sonarqube.project.key")
+    @Value("${sonarqube.project.key}")
     String sonarqubeProjectKey;
-    @Value("sonarqube.host.url")
-    String sonarHostUrl = "";
-    @Value("sonarqube.token")
+    @Value("${sonarqube.host.url}")
+    String sonarHostUrl;
+    @Value("${sonarqube.token}")
     String sonarToken;
-    @Value("sonarqube.results.path")
+    @Value("${sonarqube.results.path}")
     String sonarqubeResultsPath;
-    @Value("sonarqube.project.name")
+    @Value("${sonarqube.project.name}")
     String sonarqubeProjectName;
-
     @Value("${maven.home}")
     private String mavenHome;
 
