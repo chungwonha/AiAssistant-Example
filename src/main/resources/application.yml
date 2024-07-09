@@ -24,5 +24,19 @@ openai:
 
 file.upload-dir: ${UPLOAD_DIR}
 
+sonarqube:
+  project:
+    key: ${SONARQUBE_PROJECT_KEY}
+    name: ${SONARQUBE_PROJECT_NAME}
+  token: ${SONARQUBE_TOKEN}
+  results:
+    path: ${SONARQUBE_RESULTS_PATH}
+  host:
+    url: ${SONARQUBE_HOST_URL}
+
+
+maven:
+  home: C:/Program Files/Apache/apache-maven-3.9.8
+
 
 

@@ -1,9 +1,8 @@
 package com.chung.cool.aiassistant;
 
+import com.chung.cool.aiassistant.rmf.tools.CyberDataQueryTool;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.memory.chat.TokenWindowChatMemory;
-import dev.langchain4j.model.mistralai.MistralAiChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.service.AiServices;
 import jakarta.annotation.PostConstruct;
@@ -46,10 +45,14 @@ public class AiAssistantController {
     private String openaiApiKey;
     @Value("${file.upload-dir}")
     private String uploadDir;
+
+    private CyberDataQueryTool cyberDataQueryTool;
+
     @Autowired
-    public AiAssistantController(CurrentTimeProvider currentTimeProvider, ChatMemoryTools chatMemoryTools) {
+    public AiAssistantController(CurrentTimeProvider currentTimeProvider, ChatMemoryTools chatMemoryTools, CyberDataQueryTool cyberDataQueryTool) {
         this.currentTimeProvider = currentTimeProvider;
         this.chatMemoryTools = chatMemoryTools;
+        this.cyberDataQueryTool = cyberDataQueryTool;
     }
     @PostConstruct
     public void init() {
@@ -60,7 +63,7 @@ public class AiAssistantController {
                 .tools(currentTimeProvider)
                 .build();
 
-        ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
+        ChatMemoryProvider myChatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
                 .id(memoryId)
                 .maxMessages(10)
                 .chatMemoryStore(myPersistentChatMemoryStore)
@@ -68,10 +71,13 @@ public class AiAssistantController {
 
         myAiAssistant = AiServices.builder(MyAiAssistant.class)
                 .chatLanguageModel(OpenAiChatModel.withApiKey(openaiApiKey))
-                .chatMemoryProvider(chatMemoryProvider)
-                .tools(currentTimeProvider,chatMemoryTools)
+                .chatMemoryProvider(myChatMemoryProvider)
+                .tools(currentTimeProvider,chatMemoryTools, cyberDataQueryTool)
                 .build();
     }
+
+
+
     @PostMapping("/chat")
     public String chat(@RequestBody Map<String,String> prompt) {
         return myAiAssistant.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));

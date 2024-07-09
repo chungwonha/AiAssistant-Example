@@ -4,6 +4,7 @@ import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
+import dev.langchain4j.data.document.parser.TextDocumentParser;
 import dev.langchain4j.data.document.parser.apache.pdfbox.ApachePdfBoxDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -48,14 +50,25 @@ public class AiAssistantService {
         log.info("embeddingStore called---------------");
         //log.info("uploadDir+fileName: "+uploadDir+fileName);
         log.info("uploadDir+fileName: "+uploadDir+fileName);
+        try {
+            String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+            List<TextSegment> documentSegments=null;
+            Document document=null;
+            if ("pdf".equals(fileType)) {
+                document = FileSystemDocumentLoader.loadDocument(Paths.get(uploadDir + fileName),
+                        new ApachePdfBoxDocumentParser());
 
-        Document document = FileSystemDocumentLoader.loadDocument(Paths.get(uploadDir+fileName),
-                                                                  new ApachePdfBoxDocumentParser());
-        DocumentSplitter splitter = DocumentSplitters.recursive(200, 0);
-
-        List<TextSegment> documentSegments = splitter.split(document);
-        List<Embedding> documentEmbeddings = embeddingModel.embedAll(documentSegments).content();
-        elasticsearchEmbeddingStore.addAll(documentEmbeddings, documentSegments);
+            } else if ("txt".equals(fileType)) {
+                document = FileSystemDocumentLoader.loadDocument(Paths.get(uploadDir + fileName),
+                        new TextDocumentParser());
+            }
+            DocumentSplitter splitter = DocumentSplitters.recursive(200, 0);
+            documentSegments = splitter.split(document);
+            List<Embedding> documentEmbeddings = embeddingModel.embedAll(documentSegments).content();
+            elasticsearchEmbeddingStore.addAll(documentEmbeddings, documentSegments);
+        }catch (Exception e){
+            log.error("Error in embeddingStore: "+e.getMessage());
+        }
 
         log.info("embeddingStore completed---------------");
     }
