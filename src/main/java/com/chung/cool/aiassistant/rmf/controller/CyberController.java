@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * Description: CyberController is the main controller for the Cyber AI Assistant application.
+ * It provides endpoints for chatting with the AI, scanning code repositories, saving scan results,
+ * retrieving issues by severity, and remediating code.
+ * Author: Chung Ha
+ */
+
 @RestController
 @RequestMapping("/cyberaiassistant/api")
 @Slf4j
@@ -21,18 +29,21 @@ public class CyberController {
     private CodeScanningService codeScanningService;
 
     @Autowired
-    private SonarQubeDataService sonarQubeDataService;
-
-    private CyberIssueAnalystAgent cyberIssueAnalystAgent;
+    private CodeRemediationService codeRemediationService;
 
     @Autowired
-    public CyberController(CyberAiAgent cyberAiAgent){
-          cyberIssueAnalystAgent = cyberAiAgent.getCyberIssueAnalystAgent();
+    private SonarQubeDataService sonarQubeDataService;
+
+    private final SASTAnalystAgent SASTAnalystAgent;
+
+    @Autowired
+    public CyberController(AiCodeSentinel aiCodeSentinel){
+          SASTAnalystAgent = aiCodeSentinel.getSASTAnalystAgent();
     }
 
     @PostMapping("/chat")
     public String chat(@RequestBody Map<String,String> prompt) {
-        return cyberIssueAnalystAgent.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));
+        return SASTAnalystAgent.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));
     }
 
     @PostMapping("/codescan")
@@ -54,5 +65,8 @@ public class CyberController {
         return ResponseEntity.ok(issues);
     }
 
-
+    @PostMapping("/remediate-code")
+    public String remediateCode(@RequestParam String filePath, @RequestParam String instruction) {
+        return codeRemediationService.remediate(filePath, instruction);
+    }
 }

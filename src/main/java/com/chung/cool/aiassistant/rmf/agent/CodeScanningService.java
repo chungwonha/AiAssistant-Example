@@ -21,6 +21,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.nio.file.*;
 
+/**
+ * Description: Service to scan code repositories for vulnerabilities using SonarQube
+ * Author: Chung Ha
+ */
 @Service
 @Slf4j
 public class CodeScanningService {

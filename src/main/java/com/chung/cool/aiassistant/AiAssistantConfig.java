@@ -1,7 +1,5 @@
 package com.chung.cool.aiassistant;
 
-import com.chung.cool.aiassistant.rmf.agent.SonarQubeDataService;
-import com.chung.cool.aiassistant.rmf.tools.CyberDataQueryTool;
 import dev.langchain4j.chain.ConversationalRetrievalChain;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
@@ -11,7 +9,6 @@ import dev.langchain4j.retriever.EmbeddingStoreRetriever;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.elasticsearch.ElasticsearchEmbeddingStore;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

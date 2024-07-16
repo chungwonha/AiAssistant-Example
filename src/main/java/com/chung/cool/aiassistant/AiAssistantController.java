@@ -1,6 +1,6 @@
 package com.chung.cool.aiassistant;
 
-import com.chung.cool.aiassistant.rmf.tools.CyberDataQueryTool;
+import com.chung.cool.aiassistant.rmf.tools.SASTDataQueryTool;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -46,13 +46,13 @@ public class AiAssistantController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    private CyberDataQueryTool cyberDataQueryTool;
+    private SASTDataQueryTool SASTDataQueryTool;
 
     @Autowired
-    public AiAssistantController(CurrentTimeProvider currentTimeProvider, ChatMemoryTools chatMemoryTools, CyberDataQueryTool cyberDataQueryTool) {
+    public AiAssistantController(CurrentTimeProvider currentTimeProvider, ChatMemoryTools chatMemoryTools, SASTDataQueryTool SASTDataQueryTool) {
         this.currentTimeProvider = currentTimeProvider;
         this.chatMemoryTools = chatMemoryTools;
-        this.cyberDataQueryTool = cyberDataQueryTool;
+        this.SASTDataQueryTool = SASTDataQueryTool;
     }
     @PostConstruct
     public void init() {
@@ -72,7 +72,7 @@ public class AiAssistantController {
         myAiAssistant = AiServices.builder(MyAiAssistant.class)
                 .chatLanguageModel(OpenAiChatModel.withApiKey(openaiApiKey))
                 .chatMemoryProvider(myChatMemoryProvider)
-                .tools(currentTimeProvider,chatMemoryTools, cyberDataQueryTool)
+                .tools(currentTimeProvider,chatMemoryTools, SASTDataQueryTool)
                 .build();
     }
 
