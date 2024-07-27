@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SonarQube Findings</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>SonarQube Findings</h1>
+<table class="styled-table">
+    <thead>
+    <tr>
+        <th>Project</th>
+        <th>Rule</th>
+        <th>Severity</th>
+        <th>Status</th>
+        <th>Type</th>
+        <th>Component</th>
+        <th>Message</th>
+        <th>Author</th>
+        <th>Key</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="finding : ${findings}">
+        <td th:text="${finding.project}"></td>
+        <td th:text="${finding.rule}"></td>
+        <td th:text="${finding.severity}"></td>
+        <td th:text="${finding.status}"></td>
+        <td th:text="${finding.type}"></td>
+        <td th:text="${finding.component}"></td>
+        <td th:text="${finding.message}"></td>
+        <td th:text="${finding.author}"></td>
+        <td th:text="${finding.key}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

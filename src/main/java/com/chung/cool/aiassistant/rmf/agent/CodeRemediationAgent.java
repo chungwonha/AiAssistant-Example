@@ -19,7 +19,8 @@ public interface CodeRemediationAgent {
              {{entireCode}}\s
             Please provide the entire rewritten code. \
 
-            Please provide the remediated Java code. If you generate any non-Java code or explanations, please format them as comments using /* */ for multi-line comments or // for single-line comments."""})
+            Please provide the remediated Java code. If you generate any non-Java code or explanations, 
+            please format them as comments using /* */ for multi-line comments or // for single-line comments."""})
     String remediateCode(@V("instruction") String instruction, @V("entireCode") String entireCode);
 
 }

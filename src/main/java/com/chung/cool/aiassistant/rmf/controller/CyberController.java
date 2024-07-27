@@ -43,7 +43,12 @@ public class CyberController {
 
     @PostMapping("/chat")
     public String chat(@RequestBody Map<String,String> prompt) {
-        return SASTAnalystAgent.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));
+        log.info("chat called---------------");
+        log.info("userid: "+prompt.get("userid"));
+        log.info("message: "+prompt.get("message"));
+        String response = SASTAnalystAgent.chat(Long.parseLong(prompt.get("userid")),prompt.get("message"));
+        log.info("response: "+response);
+        return response;
     }
 
     @PostMapping("/codescan")

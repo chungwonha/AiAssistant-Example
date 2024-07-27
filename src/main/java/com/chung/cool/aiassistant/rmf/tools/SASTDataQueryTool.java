@@ -40,7 +40,8 @@ public class SASTDataQueryTool {
         return sonarQubeDataService.findAllIssuesByProjectKey(projectKey);
     }
 
-    @Tool("Retrieve cyber issues by severity {{severity}} and project key {{projectKey}} and rewrite the code according to each message or instruction provided.")
+    @Tool("Retrieve cyber issues by severity {{severity}} and project key {{projectKey}} and " +
+            "rewrite the code according to each message or instruction provided.")
     public String queryIssuesBySeverityAndProjectKeyAndRewriteCodeForRemediation(String severity, String projectKey) {
         log.info("Querying issues by severity: " + severity + " and project key: " + projectKey);
         List<Issue> listOfIssues = sonarQubeDataService.findIssuesBySeverity(severity.toUpperCase());

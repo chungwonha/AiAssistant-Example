@@ -92,6 +92,10 @@ public class SonarQubeDataService {
         return projectRepository.findByKey(projectKey);
     }
 
+    public List<Project> findAllProjects() {
+        return projectRepository.findAll();
+    }
+
     public List<Flow> findAllFlowsBySeverity(String severity) {
         List<Issue> issues = this.findIssuesBySeverity(severity);
         return issues.stream()

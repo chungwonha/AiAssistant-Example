@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>AI Code Sentinel Chat</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>AI Code Sentinel Chat</h1>
+        <div class="input-container">
+            <label for="prompt">Prompt:</label>
+            <input type="text" id="prompt" name="prompt">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <div class="chat-history" id="chat-history">
+        <!-- Existing messages will be displayed here -->
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        const prompt = document.getElementById('prompt').value;
+        fetch('/cyberaiassistant/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userid: '13', message: prompt }) // replace with actual user ID
+        }).then(response => response.text())
+            .then(data => {
+                const chatHistory = document.getElementById('chat-history');
+
+                // Add user message
+                const userMessage = document.createElement('div');
+                userMessage.className = 'chat-message user-message';
+                userMessage.innerHTML = `<p>${prompt}</p>`;
+                chatHistory.appendChild(userMessage);
+
+                // Add assistant message
+                const assistantMessage = document.createElement('div');
+                assistantMessage.className = 'chat-message assistant-message';
+                assistantMessage.innerHTML = formatResponse(data);
+                chatHistory.appendChild(assistantMessage);
+
+                // Clear the prompt input
+                document.getElementById('prompt').value = '';
+
+                // Scroll to the bottom of chat history
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            });
+    }
+
+    function formatResponse(response) {
+        let formattedResponse = '';
+        try {
+            const jsonResponse = JSON.parse(response);
+            if (Array.isArray(jsonResponse)) {
+                formattedResponse = '<ul>';
+                jsonResponse.forEach(item => {
+                    formattedResponse += `<li>${item}</li>`;
+                });
+                formattedResponse += '</ul>';
+            } else {
+                formattedResponse = `<pre>${jsonResponse}</pre>`;
+            }
+        } catch (e) {
+            formattedResponse = `<pre>${response}</pre>`;
+        }
+        return formattedResponse;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!-- src/main/resources/templates/home.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>AI Code Sentinel</title>
+</head>
+<body>
+<h1>AI Code Sentinel</h1>
+<button onclick="location.href='/chat'">Chat</button>
+<button onclick="runSonarQube()">Run SonarQube</button>
+
+<script>
+    function runSonarQube() {
+        fetch('/cyberaiassistant/api/codescan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ repositoryUrl: 'your-repo-url' }) // replace with actual URL
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/sonarqube';
+            }
+        });
+    }
+</script>
+</body>
+</html>
